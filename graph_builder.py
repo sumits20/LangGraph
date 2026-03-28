@@ -16,3 +16,21 @@ tool_node = ToolNode(tools)
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 llm_with_tools = llm.bind_tools(tools)
+
+def build_graph():
+    graph = StateGraph(ChatState)
+
+    graph.add_node("chatbot", chatbot_node)
+    graph.add_node("tools", tool_node)
+
+    graph.set_entry_point("chatbot")
+
+    graph.add_conditional_edges(
+        "chatbot",
+        route_tools
+    )
+
+    graph.add_edge("tools", "chatbot")
+
+    return graph.compile()
+
