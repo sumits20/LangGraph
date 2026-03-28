@@ -2,12 +2,8 @@ import streamlit as st
 from langchain_core.messages import HumanMessage
 from graph_builder import build_graph
 
-st.set_page_config(page_title="Mini LangGraph Demo", layout="wide")
-st.title("Mini LangGraph Demo")
-
-# Temporary debug
-st.write("Secret present:", "OPENAI_API_KEY" in st.secrets)
-st.write("Secret keys:", list(st.secrets.keys()))
+st.set_page_config(page_title="Mini Chat BOT - using LangGraph", layout="wide")
+st.title("LangGraph Chat BOT")
 
 @st.cache_resource
 def get_graph():
