@@ -1,31 +1,25 @@
-
+import streamlit as st
 from langchain_core.messages import HumanMessage
 from graph_builder import build_graph
-import streamlit as st
-from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(
-    model="gpt-4o-mini",
-    temperature=0,
-    api_key=api_key
-)
-
-api_key = st.secrets["OPENAI_API_KEY"]
+st.set_page_config(page_title="Mini LangGraph Demo", layout="wide")
+st.title("Mini LangGraph Demo")
 
 graph = build_graph()
 
-while True:
-    user_input = input("\nYou: ")
-    if user_input.lower() in {"exit", "quit"}:
-        break
+user_input = st.text_input("Ask something")
 
+if st.button("Run") and user_input:
     result = graph.invoke({
         "messages": [HumanMessage(content=user_input)]
     })
 
-    print("\nFinal messages:")
+    st.subheader("Final messages")
+
     for msg in result["messages"]:
         msg_type = msg.__class__.__name__
-        print(f"{msg_type}: {msg.content}")
+        st.write(f"**{msg_type}:** {msg.content}")
+
         if hasattr(msg, "tool_calls") and msg.tool_calls:
-            print("  tool_calls:", msg.tool_calls)
+            st.write("Tool calls:")
+            st.json(msg.tool_calls)
