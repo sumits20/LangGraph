@@ -5,7 +5,15 @@ from graph_builder import build_graph
 st.set_page_config(page_title="Mini LangGraph Demo", layout="wide")
 st.title("Mini LangGraph Demo")
 
-graph = build_graph()
+# Temporary debug
+st.write("Secret present:", "OPENAI_API_KEY" in st.secrets)
+st.write("Secret keys:", list(st.secrets.keys()))
+
+@st.cache_resource
+def get_graph():
+    return build_graph()
+
+graph = get_graph()
 
 user_input = st.text_input("Ask something")
 
@@ -18,7 +26,7 @@ if st.button("Run") and user_input:
 
     for msg in result["messages"]:
         msg_type = msg.__class__.__name__
-        st.write(f"**{msg_type}:** {msg.content}")
+        st.write(f"**{msg_type}:** {msg.content if msg.content else '(no text content)'}")
 
         if hasattr(msg, "tool_calls") and msg.tool_calls:
             st.write("Tool calls:")
